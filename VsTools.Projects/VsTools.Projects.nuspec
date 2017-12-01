@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>1.0</version>
+    <title>VsTools.Projects</title>
+    <authors>David Khristepher Santos</authors>
+    <owners>$author$</owners>
+    <projectUrl>https://github.com/RupertAvery/VsTools.Projects</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A library for reading and modifying CSPROJ files easily</description>
+    <copyright>Copyright 2017</copyright>
+    <tags>csproj xml automation visual-studio tool</tags>
+  </metadata>
+</package>
