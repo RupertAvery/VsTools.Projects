@@ -6,6 +6,14 @@ It grew out of a need to automate the insertion of newly created files using dat
 
 **NOTE:** This is not supposed to be used inside Visual Studio as an alternative to writing an Visual Studio extension. Rather, it is a way to automate modifying the csproj XML easily, without having to think about elements and attributes and indentation.
 
+# NuGet
+
+You can install the library from NuGet
+
+```
+PS> Install-Package VsTools.Projects
+```
+
 # Features
 
 * Read and write .csproj files (Only tested on 2017)
