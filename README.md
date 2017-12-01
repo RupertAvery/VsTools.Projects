@@ -4,7 +4,7 @@
 
 It grew out of a need to automate the insertion of newly created files using data extracted from existing files.
 
-**NOTE:** This is not supposed to be used inside Visual Studio as an alternative to writing an Visual Studio extension. Rather, it is a way to automate modifying the csproj XML easily, without having to think about elements and attributes and indentation.
+**NOTE:** This is not supposed to be used inside Visual Studio as an alternative to writing a Visual Studio extension. Rather, it is a way to automate modifying the csproj XML easily, without having to think about elements and attributes and indentation.
 
 # NuGet
 
@@ -137,12 +137,12 @@ ItemGroup contents inherit from ItemGroupContent. Accessing the Contents propert
 var contents = itemGroup.Contents.ToList();
 
 // of type Reference
-Console.WriteLine(contents[0].HintPath);
+Console.WriteLine(((Reference)contents[0]).HintPath);
 
 // of type Compile
-Console.WriteLine(contents[1].DependentUpon);
+Console.WriteLine(((Compile)contents[1]).DependentUpon);
 
 // of type Content
-Console.WriteLine(contents[0].Include);
+Console.WriteLine(((Content)contents[0]).Include);
 
 ```
