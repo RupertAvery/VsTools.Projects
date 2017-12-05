@@ -58,6 +58,15 @@ namespace VsTools.Projects
 
         public XNode Node { get; set; }
 
+        /// <summary>
+        /// Creates an CsProjectNode with an element with the specified name
+        /// </summary>
+        /// <param name="name"></param>
+        protected CsProjectNode(string name)
+        {
+            Node = new XElement(XName.Get(name, MsbuildSchema));
+        }
+
         protected CsProjectNode()
         {
             Node = new XElement(XName.Get(ElementName, MsbuildSchema));
