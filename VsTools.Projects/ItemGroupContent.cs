@@ -2,11 +2,15 @@ using System.Xml.Linq;
 
 namespace VsTools.Projects
 {
-    public abstract class ItemGroupContent : CsProjectNode
+    public class ItemGroupContent : CsProjectNode
     {
         public override int Depth => 2;
 
         private string _include;
+
+        public override string ElementName {
+            get { return ((XElement) Node).Name.LocalName; }
+        }
 
         public string Include
         {
