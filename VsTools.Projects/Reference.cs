@@ -46,6 +46,10 @@ namespace VsTools.Projects
             _specificVersion = els.TryGetXElementValue("SpecificVersion");
         }
 
+        public Reference(string include) : base(include)
+        {
+        }
+
         public Reference(string include, string hintPath) : base(include)
         {
             HintPath = hintPath;

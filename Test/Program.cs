@@ -11,13 +11,13 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            var project = Project.Load("testproj.csproj");
+            var project = ProjectExtensions.CreateDefaultConsole(Guid.NewGuid(), "Test", "Test", "v4.5.2");
 
-            var firstItemGroup = project.ItemGroups.First();
+            //var firstItemGroup = project.ItemGroups.First();
 
-            var folder = (Folder)firstItemGroup.Contents.First();
+            //var folder = (Folder)firstItemGroup.Contents.First();
 
-            Console.WriteLine(folder.Include);
+            //Console.WriteLine(folder.Include);
 
             var itemGroup = new ItemGroup();
 
@@ -27,7 +27,9 @@ namespace Test
 
             itemGroup.AddContent(newFile);
 
-            firstItemGroup.AddAfterSelf(itemGroup);
+            project.Add(itemGroup);
+
+            //firstItemGroup.AddAfterSelf(itemGroup);
 
             var referenceItemGroup = new ItemGroup();
 

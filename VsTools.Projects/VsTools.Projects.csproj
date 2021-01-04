@@ -51,6 +51,7 @@
     <Compile Include="ItemGroupFileContent.cs" />
     <Compile Include="None.cs" />
     <Compile Include="Project.cs" />
+    <Compile Include="ProjectExtensions.cs" />
     <Compile Include="ProjectReference.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyGroup.cs" />

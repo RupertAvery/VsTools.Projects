@@ -46,7 +46,7 @@ namespace VsTools.Projects
 
         public void Add(ProjectChildNode node)
         {
-
+            _source.Root.Add(node.Node);
         }
 
         public IEnumerable<ItemGroup> ItemGroups
@@ -193,6 +193,4 @@ namespace VsTools.Projects
             return _source;
         }
     }
-
-
 }

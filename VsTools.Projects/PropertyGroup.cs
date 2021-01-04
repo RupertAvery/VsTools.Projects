@@ -17,6 +17,16 @@ namespace VsTools.Projects
 
         }
 
+        public void AddChild(string name, string value)
+        {
+            AddOrUpdateElement(name, value);
+        }
+
+        public void AddChild(string name, string value, string condition)
+        {
+            AddOrUpdateElement(name, value, condition);
+        }
+
         /// <summary>
         /// Returns the text value of the element matching the index. To get the contents of the element, use GetChildElement() to get the Element object
         /// </summary>

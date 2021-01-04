@@ -144,6 +144,29 @@ namespace VsTools.Projects
             Element.Add(attr);
         }
 
+        public void AddOrUpdateElement(string name, string value, string condition)
+        {
+            var child = Element.Elements().FirstOrDefault(x => x.Name.LocalName == name);
+            if (child != null)
+            {
+                child.Value = value;
+                child.SetAttributeValue("Condition", condition);
+            }
+            else
+            {
+                if (_closingElementSpace == null)
+                {
+                    _closingElementSpace = new XText("\r\n" + new string(' ', (Depth) * 2));
+                    Element.Add(_closingElementSpace);
+                }
+                child = new XElement(XName.Get(name, MsbuildSchema));
+                child.Add(value);
+                child.SetAttributeValue("Condition", condition);
+                _closingElementSpace.AddBeforeSelf(child);
+                child.AddBeforeSelf(new XText("\r\n" + new string(' ', (Depth + 1) * 2)));
+            }
+        }
+
         public void AddOrUpdateElement(string name, string value)
         {
             var child = Element.Elements().FirstOrDefault(x => x.Name.LocalName == name);
