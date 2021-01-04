@@ -11,26 +11,21 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            var project = ProjectExtensions.CreateDefaultConsole(Guid.NewGuid(), "Test", "Test", "v4.5.2");
-
-            //var firstItemGroup = project.ItemGroups.First();
-
-            //var folder = (Folder)firstItemGroup.Contents.First();
-
-            //Console.WriteLine(folder.Include);
+            var project = Project.Load("testproj.csproj");
 
             var itemGroup = new ItemGroup();
-
+            // Add a file that will be included for compilation
             var newFile = new Compile("testfile.cs");
-
-            newFile.DependentUpon = "parent.cs";
-
+            // You can add many files to one ItemGroup...
+            // Add it to the ItemGroup
             itemGroup.AddContent(newFile);
 
-            project.Add(itemGroup);
+            // Add the new itemgroup adter the first itemgroup
+            var firstItemGroup = project.ItemGroups.First();
 
-            //firstItemGroup.AddAfterSelf(itemGroup);
+            firstItemGroup.AddAfterSelf(itemGroup);
 
+            // Add a project referecne.
             var referenceItemGroup = new ItemGroup();
 
             var guid = Guid.NewGuid();
@@ -39,6 +34,7 @@ namespace Test
 
             referenceItemGroup.AddContent(reference);
 
+            // add it after our itemgroup
             itemGroup.AddAfterSelf(referenceItemGroup);
 
             project.Save("testproj.csproj");
