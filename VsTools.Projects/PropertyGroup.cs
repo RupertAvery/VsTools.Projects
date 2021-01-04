@@ -3,9 +3,14 @@ using System.Xml.Linq;
 
 namespace VsTools.Projects
 {
-    public class PropertyGroup : CsProjectNode
+    public class PropertyGroup : ProjectChildNode
     {
         public override int Depth => 1;
+
+        public PropertyGroup()
+        {
+
+        }
 
         public PropertyGroup(XNode node) : base(node)
         {

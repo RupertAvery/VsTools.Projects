@@ -11,9 +11,9 @@ namespace VsTools.Projects
 
         private string _include;
 
-        public override string ElementName {
-            get { return ((XElement) Node).Name.LocalName; }
-        }
+        //public override string ElementName {
+        //    get { return ((XElement) Node).Name.LocalName; }
+        //}
 
         public string Include
         {

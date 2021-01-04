@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -10,6 +11,18 @@ namespace VsTools.Projects
     public class Project
     {
         private readonly XDocument _source;
+
+        /// <summary>
+        /// Instantiates a new Project
+        /// </summary>
+        public Project()
+        {
+            _source = new XDocument();
+            XNamespace xmlns = "http://schemas.microsoft.com/developer/msbuild/2003";
+            var projectElement = new XElement(xmlns + "Project");
+            projectElement.SetAttributeValue("ToolsVersion", "15.0");
+            _source.Add(projectElement);
+        }
 
         /// <summary>
         /// Instantiates a Project from an XML document
@@ -31,6 +44,10 @@ namespace VsTools.Projects
             return new Project(xml);
         }
 
+        public void Add(ProjectChildNode node)
+        {
+
+        }
 
         public IEnumerable<ItemGroup> ItemGroups
         {
@@ -176,4 +193,6 @@ namespace VsTools.Projects
             return _source;
         }
     }
+
+
 }

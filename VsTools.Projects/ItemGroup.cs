@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace VsTools.Projects
 {
-    public class ItemGroup : CsProjectNode
+    public class ItemGroup : ProjectChildNode
     {
         public override int Depth => 1;
 

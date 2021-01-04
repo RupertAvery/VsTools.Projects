@@ -16,7 +16,7 @@ namespace VsTools.Projects
         public static Type GetItemGroupContentTypeFromName(string name)
         {
             Type type;
-            if (_typelookup.TryGetValue(name, out type))
+            if (!_typelookup.TryGetValue(name, out type))
             {
                 return typeof(ItemGroupContent);
             }

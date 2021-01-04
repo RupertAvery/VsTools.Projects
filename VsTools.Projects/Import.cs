@@ -2,7 +2,24 @@ using System.Xml.Linq;
 
 namespace VsTools.Projects
 {
-    public class Import : CsProjectNode
+    public abstract class ProjectChildNode : CsProjectNode
+    {
+        protected ProjectChildNode() 
+        {
+
+        }
+
+        protected ProjectChildNode(string name) : base(name)
+        {
+
+        }
+        protected ProjectChildNode(XNode node) : base(node)
+        {
+
+        }
+    }
+
+    public class Import : ProjectChildNode
     {
         private string _project;
         public override int Depth => 1;
