@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VsTools.Projects;
 
 namespace Test
@@ -11,33 +8,102 @@ namespace Test
     {
         static void Main(string[] args)
         {
+            Add();
+        }
+
+        public static void Create()
+        {
+            var testproject = ProjectExtensions.CreateDefaultConsole("netcoreapp3.1");
+
+            var itemGroup1 = new ItemGroup();
+            
+            var newFile1 = new Compile("testfile.cs");
+
+            itemGroup1.Add(newFile1);
+            
+            testproject.Add(itemGroup1);
+            
+            testproject.SaveAs("testconsole.csproj");
+        }
+
+        public static void Add()
+        {
+            var project = Project.Load("testproj.csproj");
+
+            var references = new ItemGroup();
+
+            var reference = new Reference("Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL");
+
+            reference.HintPath = "..\\packages\\Newtonsoft.Json.11.0.1\\lib\\net45\\Newtonsoft.Json.dll";
+
+            reference.Private = "True";
+
+            references.Add(reference);
+
+            var files = new ItemGroup();
+
+            var file = new Compile("path\\to\\class.cs");
+
+            file.DependentUpon = "path\\to\\page.cshtml";
+
+            files.Add(file);
+
+            project.Add(references);
+            project.Add(files);
+
+            project.Save();
+        }
+
+
+        public static void AddBeforeLastImport()
+        {
+            var project = Project.Load("testproj.csproj");
+
+            var lastImport = project.Imports.Last();
+
+            var itemGroup = new ItemGroup();
+
+            var newFile = new Compile("testfile.cs");
+
+            itemGroup.Add(newFile);
+
+            lastImport.AddBeforeSelf(itemGroup);
+
+            project.Save();
+        }
+
+        public static void AddAfterFirstItemGroup()
+        {
             var project = Project.Load("testproj.csproj");
 
             var itemGroup = new ItemGroup();
-            // Add a file that will be included for compilation
-            var newFile = new Compile("testfile.cs");
-            // You can add many files to one ItemGroup...
-            // Add it to the ItemGroup
-            itemGroup.AddContent(newFile);
 
-            // Add the new itemgroup adter the first itemgroup
+            var newFile = new Compile("testfile.cs");
+
+            itemGroup.Add(newFile);
+
             var firstItemGroup = project.ItemGroups.First();
 
             firstItemGroup.AddAfterSelf(itemGroup);
 
-            // Add a project referecne.
             var referenceItemGroup = new ItemGroup();
 
             var guid = Guid.NewGuid();
 
-            var reference = new ProjectReference("../classlibrary/classlibrary.csproj", $"{{{guid}}}", "Some.Namespace");
+            var reference = new ProjectReference("../classlibrary/classlibrary.csproj")
+            {
+                Project = $"{{{guid}}}",
+                Name = "Some.Namespace", 
+            };
 
-            referenceItemGroup.AddContent(reference);
+            // Add a Condition attribute to an item Metadata
+            reference.Metadata["Project"].Condition = " '${CustomProperty}' == 'CustomValue' ";
 
-            // add it after our itemgroup
+            referenceItemGroup.Add(reference);
+
             itemGroup.AddAfterSelf(referenceItemGroup);
 
-            project.Save("testproj.csproj");
+            project.Save();
         }
     }
 }

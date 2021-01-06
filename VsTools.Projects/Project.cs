@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -10,18 +9,31 @@ namespace VsTools.Projects
 {
     public class Project
     {
+        internal static XNamespace MsbuildSchema = "http://schemas.microsoft.com/developer/msbuild/2003";
+
         private readonly XDocument _source;
+        private string _sourceFile;
+
+        public bool Is2017Project => _source.Root.Attribute("Sdk") != null;
 
         /// <summary>
         /// Instantiates a new Project
         /// </summary>
-        public Project()
+        private Project(bool is2017Project, string toolsVersion = "15.0")
         {
             _source = new XDocument();
-            XNamespace xmlns = "http://schemas.microsoft.com/developer/msbuild/2003";
-            var projectElement = new XElement(xmlns + "Project");
-            projectElement.SetAttributeValue("ToolsVersion", "15.0");
-            _source.Add(projectElement);
+            var root = new ProjectRoot(is2017Project, toolsVersion);
+            _source.Add(root.Node);
+        }
+
+        public static Project CreatePreVS2017Project(string toolsVersion = "15.0")
+        {
+            return new Project(false, toolsVersion);
+        }
+        
+        public static Project CreateVS2017Project()
+        {
+            return new Project(true);
         }
 
         /// <summary>
@@ -33,6 +45,8 @@ namespace VsTools.Projects
             _source = source;
         }
 
+
+
         /// <summary>
         /// Loads a .csporj file and returns a new Project instance
         /// </summary>
@@ -41,12 +55,19 @@ namespace VsTools.Projects
         public static Project Load(string file)
         {
             var xml = XDocument.Load(file, LoadOptions.PreserveWhitespace);
-            return new Project(xml);
+            if (xml.Root.Name.LocalName != "Project")
+            {
+                throw new Exception("Invalid Project file, root element not found!");
+            }
+
+            var project = new Project(xml) { _sourceFile = file };
+
+            return project;
         }
 
-        public void Add(ProjectChildNode node)
+        public void Add(ProjectChildElement element)
         {
-            _source.Root.Add(node.Node);
+            new ProjectRoot(_source.Root).AddChild(element);
         }
 
         public IEnumerable<ItemGroup> ItemGroups
@@ -75,12 +96,12 @@ namespace VsTools.Projects
 
 
         /// <summary>
-        /// Returns a <see cref="ItemGroupContent"/> instance with an Include matching the given string, or null otherwise
+        /// Returns a <see cref="Item"/> instance with an Include matching the given string, or null otherwise
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="include"></param>
         /// <returns></returns>
-        public T FindItemGroupContent<T>(string include) where T : ItemGroupContent, new()
+        public T FindItemGroupContent<T>(string include) where T : Item, new()
         {
             var node =
                 _source.DescendantNodes()
@@ -96,12 +117,12 @@ namespace VsTools.Projects
         }
 
         /// <summary>
-        /// Returns true if an <see cref="ItemGroupContent"/> with a matching Include exists in the Project
+        /// Returns true if an <see cref="Item"/> with a matching Include exists in the Project
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="include"></param>
         /// <returns></returns>
-        public bool ItemGroupContentExists<T>(string include) where T : ItemGroupContent
+        public bool ItemGroupContentExists<T>(string include) where T : Item
         {
             return _source.DescendantNodes()
                 .Where(x => x is XElement)
@@ -112,7 +133,7 @@ namespace VsTools.Projects
         }
 
         /// <summary>
-        /// Returns a <see cref="ItemGroupContent"/> instance with an Include matching the given string, or null otherwise
+        /// Returns a <see cref="Item"/> instance with an Include matching the given string, or null otherwise
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="include"></param>
@@ -149,16 +170,36 @@ namespace VsTools.Projects
         }
 
         /// <summary>
+        /// Saves the Project
+        /// </summary>
+        public void Save()
+        {
+            if (_sourceFile != null)
+            {
+                SaveAs(_sourceFile);
+            }
+            else
+            {
+                throw new Exception("Project file was created with Load(). Please use Save(file)");
+            }
+        }
+
+        /// <summary>
         /// Saves the Project as an Xml Document
         /// </summary>
         /// <param name="file"></param>
-        public void Save(string file)
+        public void SaveAs(string file)
         {
             var settings = new XmlWriterSettings
             {
                 Indent = true,
                 IndentChars = "  ",
             };
+
+            if (!string.IsNullOrEmpty(_source.Root.Name.Namespace.NamespaceName))
+            {
+                SetDefaultXmlNamespace(_source.Root, _source.Root.Name.Namespace);
+            }
 
             using (XmlWriter writer = XmlWriter.Create(file, settings))
             {
@@ -178,6 +219,11 @@ namespace VsTools.Projects
                 IndentChars = "  ",
             };
 
+            if (!string.IsNullOrEmpty(_source.Root.Name.Namespace.NamespaceName))
+            {
+                SetDefaultXmlNamespace(_source.Root, _source.Root.Name.Namespace);
+            }
+
             using (XmlWriter writer = XmlWriter.Create(stream, settings))
             {
                 _source.Save(writer);
@@ -191,6 +237,14 @@ namespace VsTools.Projects
         public XDocument ToXml()
         {
             return _source;
+        }
+
+        protected void SetDefaultXmlNamespace(XElement xelem, XNamespace xmlns)
+        {
+            if (xelem.Name.NamespaceName == string.Empty)
+                xelem.Name = xmlns + xelem.Name.LocalName;
+            foreach (var e in xelem.Elements())
+                SetDefaultXmlNamespace(e, xmlns);
         }
     }
 }

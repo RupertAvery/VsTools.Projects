@@ -5,10 +5,8 @@ using System.Xml.Linq;
 
 namespace VsTools.Projects
 {
-    public class ItemGroup : ProjectChildNode
+    public class ItemGroup : ProjectChildElement
     {
-        public override int Depth => 1;
-
         public ItemGroup()
         {
         }
@@ -18,12 +16,12 @@ namespace VsTools.Projects
 
         }
 
-        public void AddContent(ItemGroupContent content)
+        public void Add(Item content)
         {
             AddElement(content.Node);
         }
 
-        public IEnumerable<ItemGroupContent> Contents
+        public IEnumerable<Item> Items
         {
             get
             {
@@ -32,7 +30,7 @@ namespace VsTools.Projects
                     .Select(x =>
                     {
                         var type = Reflection.GetItemGroupContentTypeFromName(x.Name.LocalName);
-                        return (ItemGroupContent) Activator.CreateInstance(type, new object[] {x});
+                        return (Item) Activator.CreateInstance(type, new object[] {x});
                     });
             }
         }

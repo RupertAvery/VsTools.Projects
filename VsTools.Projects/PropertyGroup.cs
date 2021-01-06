@@ -3,43 +3,39 @@ using System.Xml.Linq;
 
 namespace VsTools.Projects
 {
-    public class PropertyGroup : ProjectChildNode
+    public class PropertyGroup : ProjectChildElement
     {
-        public override int Depth => 1;
-
+        private readonly MetadataCollection _propertyCollection ;
+        
         public PropertyGroup()
         {
-
+            _propertyCollection = new MetadataCollection(this);
         }
 
         public PropertyGroup(XNode node) : base(node)
         {
-
         }
 
-        public void AddChild(string name, string value)
+        public bool HasProperty(string property)
         {
-            AddOrUpdateElement(name, value);
+            return HasMetadata(property);
         }
 
-        public void AddChild(string name, string value, string condition)
+        public string GetProperty(string property)
         {
-            AddOrUpdateElement(name, value, condition);
+            return GetMetadata(property)?.Value;
         }
 
-        /// <summary>
-        /// Returns the text value of the element matching the index. To get the contents of the element, use GetChildElement() to get the Element object
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public string this[string index]
+        public void SetProperty(string property, string value)
         {
-            get { return ((XElement)Node).Elements().First(x => x.Name.LocalName == index).Value; }
-            set
-            {
-                AddOrUpdateElement(index, value);
-            }
+            SetMetadata(property, value);
         }
 
+        public void SetProperty(string property, string value, string condition)
+        {
+            SetMetadata(property, value, condition);
+        }
+
+        public MetadataCollection Properties => _propertyCollection;
     }
 }

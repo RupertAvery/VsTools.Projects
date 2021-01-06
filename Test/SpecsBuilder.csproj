@@ -1,0 +1,373 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F97EB44F-A4CD-41B7-8281-474D96D19563}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SpecsBuilder</RootNamespace>
+    <AssemblyName>SpecsBuilder</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>SpecsBuilder.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Printing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Controls.Ribbon" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="BadgerReports.cs" />
+    <Compile Include="BadgerReportsWindow.xaml.cs">
+      <DependentUpon>BadgerReportsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Classes\BadgerValidationTests.cs" />
+    <Compile Include="Classes\DataGridExtensions.cs" />
+    <Compile Include="Classes\HotKeys.cs" />
+    <Compile Include="Classes\WindowExtension.cs" />
+    <Compile Include="Controllers\FindReplaceController.cs" />
+    <Compile Include="Enums\FindReplaceMode.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ReportBuilderWindow.xaml.cs">
+      <DependentUpon>ReportBuilderWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\ReportBuilderItemViewModel.cs" />
+    <Compile Include="ViewModels\FindReplaceViewModel.cs" />
+    <Compile Include="ViewModels\BadgerReportListItemModel.cs" />
+    <Compile Include="Classes\Comparison.cs" />
+    <Compile Include="Classes\Configuration.cs" />
+    <Compile Include="Classes\Confirm.cs" />
+    <Compile Include="Converters\ComparisonBinding.cs" />
+    <Compile Include="Data\Integrity\StateManager.cs" />
+    <Compile Include="Data\Integrity\ULBaseIntegrityManager.cs" />
+    <Compile Include="Filters\DelayedFilterViewModel.cs" />
+    <Compile Include="Filters\SpecsFilterSettings.cs" />
+    <Compile Include="Models\CrossGroupSelectorModel.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Classes\CrossGroupCreator.cs" />
+    <Compile Include="Controllers\CrossGroupSelectorController.cs" />
+    <Compile Include="Classes\DummyData.cs" />
+    <Compile Include="Classes\GroupTree.cs" />
+    <Compile Include="Classes\HistoryManager.cs" />
+    <Compile Include="Classes\Interop.cs" />
+    <Compile Include="Classes\RelayCommand.cs" />
+    <Compile Include="Classes\Settings.cs" />
+    <Compile Include="Classes\StateManager.cs" />
+    <Compile Include="Classes\SuperGroupOptions.cs" />
+    <Compile Include="Controllers\VolumeBuilderController.cs" />
+    <Compile Include="Controls\VolumeBuilder\AllOptionControl.xaml.cs">
+      <DependentUpon>AllOptionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VolumeBuilder\GroupTreeControl.xaml.cs">
+      <DependentUpon>GroupTreeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VolumeBuilder\HierarchyOptionControl.xaml.cs">
+      <DependentUpon>HierarchyOptionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VolumeBuilder\SelectOptionControl.xaml.cs">
+      <DependentUpon>SelectOptionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\CollapseConverter.cs" />
+    <Compile Include="Converters\ComparisonNTextFieldEnabledConverter.cs" />
+    <Compile Include="Converters\CompPhilConverter.cs" />
+    <Compile Include="Converters\CrossGroupConfirmConverter.cs" />
+    <Compile Include="Converters\ErrorConverter.cs" />
+    <Compile Include="Converters\FontWeightConverter.cs" />
+    <Compile Include="Converters\GroupDefConverter.cs" />
+    <Compile Include="Converters\GroupNameConverter.cs" />
+    <Compile Include="Converters\InverseVisibilityConverter.cs" />
+    <Compile Include="Converters\SurveyNameConverter.cs" />
+    <Compile Include="Converters\VolumeNameConverter.cs" />
+    <Compile Include="CrossGroupDialog.xaml.cs">
+      <DependentUpon>CrossGroupDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Undo.cs" />
+    <Compile Include="Filters\GroupFilterSettings.cs" />
+    <Compile Include="RawDataViewWindow.xaml.cs">
+      <DependentUpon>RawDataViewWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\TextReportBuilder.cs" />
+    <Compile Include="Resources\MainWindowResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MainWindowResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ProgressWindow.xaml.cs">
+      <DependentUpon>ProgressWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Classes\RegistryManager.cs" />
+    <Compile Include="Reports\ReportBuilder.cs" />
+    <Compile Include="Data\ULFileSetManager.cs" />
+    <Compile Include="Data\Integrity\ULGroupIntegrityManager.cs" />
+    <Compile Include="ViewModels\ComparisonViewModel.cs" />
+    <Compile Include="Data\ULGroupManager.cs" />
+    <Compile Include="Data\Integrity\ULSpecsIntegrityManager.cs" />
+    <Compile Include="Data\ULSpecsManager.cs" />
+    <Compile Include="Data\ULViewSet.cs" />
+    <Compile Include="Data\Integrity\ULVolumeIntegrityManager.cs" />
+    <Compile Include="Data\ULVolumeManager.cs" />
+    <Compile Include="ViewModels\ViewSemantics\GroupViewSemantics.cs" />
+    <Compile Include="ViewModels\ViewSemantics\ProjectViewSemantics.cs" />
+    <Compile Include="ViewModels\ViewSemantics\SpecsViewSemantics.cs" />
+    <Compile Include="ViewModels\ViewSemantics\ViewSemantics.cs" />
+    <Compile Include="ViewModels\VolumeBuilderSpecsTreeItem.cs" />
+    <Compile Include="ViewModels\VolumeBuilderViewModel.cs" />
+    <Compile Include="ViewModels\ViewSemantics\VolumeViewSemantics.cs" />
+    <Compile Include="VolumeBuilderWindow.xaml.cs">
+      <DependentUpon>VolumeBuilderWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FindReplaceWindow.xaml.cs">
+      <DependentUpon>FindReplaceWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SearchResults.xaml.cs">
+      <DependentUpon>SearchResults.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RawView.xaml.cs">
+      <DependentUpon>RawView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\VisibilityConverter.cs" />
+    <Page Include="BadgerReportsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\VolumeBuilder\AllOptionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\VolumeBuilder\GroupTreeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\VolumeBuilder\HierarchyOptionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\VolumeBuilder\SelectOptionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CrossGroupDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProgressWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RawDataViewWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ReportBuilderWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VolumeBuilderWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="RawView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FindReplaceWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SearchResults.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Resources\MainWindowResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MainWindowResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ULTools\ULTools.csproj">
+      <Project>{47f4fc98-ed29-488b-ac9c-b60dc25e10dd}</Project>
+      <Name>ULTools</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Classes\Comparisons\" />
+    <Folder Include="Data\File\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Expand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Collapse.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\Copy.png" />
+    <Resource Include="Images\32\Cut.png" />
+    <Resource Include="Images\32\FileOpen.png" />
+    <Resource Include="Images\32\FilePrintPreview.png" />
+    <Resource Include="Images\32\FileProperties.png" />
+    <Resource Include="Images\32\FileSave.png" />
+    <Resource Include="Images\32\FileSaveAs.png" />
+    <Resource Include="Images\32\FindDialog.png" />
+    <Resource Include="Images\32\Paste.png" />
+    <Resource Include="Images\32\TableInsertDialogWord.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\16\Copy.png" />
+    <Resource Include="Images\16\Cut.png" />
+    <Resource Include="Images\16\Redo.png" />
+    <Resource Include="Images\16\ReplaceDialog.png" />
+    <Resource Include="Images\16\Undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\SetAsGroupA.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\SetAsGroupB.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\CrossGroups.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\16\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\16\ClearFilter.png" />
+    <Resource Include="Images\16\ClearFilterDisabled.png" />
+    <Resource Include="Images\16\ClearFilterDown.png" />
+    <Resource Include="Images\16\ClearFilterHover.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\InsertRow.png" />
+    <Resource Include="Images\32\MoveDown.png" />
+    <Resource Include="Images\32\MoveUp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\Find.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\Badger.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\SetAsInternalAdder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\CrossRestart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\VolumeBuilder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\Reports.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\ClearFilters.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SpecsBuilder.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ULG.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="SpecsBuilder.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\32\Exit.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

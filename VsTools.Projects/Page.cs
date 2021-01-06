@@ -2,39 +2,34 @@ using System.Xml.Linq;
 
 namespace VsTools.Projects
 {
-    public class Compile : Item
+    public class Page : Item
     {
-        public string DependentUpon
-        {
-            get => GetMetadataValue();
-            set => AddOrUpdateMetadataValue(value);
-        }
-
         public string SubType
         {
             get => GetMetadataValue();
             set => AddOrUpdateMetadataValue(value);
         }
 
-        public string CopyToOutputDirectory
+        public string Generator
         {
             get => GetMetadataValue();
             set => AddOrUpdateMetadataValue(value);
         }
 
-        public Compile() 
+        public Page()
         {
 
         }
 
-        public Compile(XNode node) : base(node)
+        public Page(XNode node) : base(node)
         {
-            
+
         }
 
-        public Compile(string include) : base(include)
+        public Page(string include) : base(include)
         {
-            
+
         }
+
     }
 }

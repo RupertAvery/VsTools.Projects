@@ -1,148 +1,185 @@
 # Introduction
 
-**VsTools.Projects** is a library for reading and modifying the contents of (currently) Visual Studio C# Project (.csproj) files.
+**VsTools.Projects** is a set of wrapper classes around XDocument for reading and modifying the contents of Visual Studio C# Project (.csproj) files.
 
-It grew out of a need to automate the insertion of newly created files using data extracted from existing files.
+It grew out of a need to programatically insert generated source files into a project.
 
-**NOTE:** This is not supposed to be used inside Visual Studio as an alternative to writing a Visual Studio extension. Rather, it is a way to automate modifying the csproj XML easily, without having to think about elements and attributes and indentation.
+VsTools.Projects only abstracts the most common elements, as the format is completely extensible and can contain custom elements specific to a third-party assembly.
+
+The API and documentation are currently a work in progress, so expect some changes as the project progresses.
 
 # NuGet
-
-You can install the library from NuGet
 
 ```
 PS> Install-Package VsTools.Projects
 ```
 
-# Features
-
-* Read and write .csproj files (Only tested on 2017)
-* Access to first-level elements easily as IEnumerable properties
-    * Import
-    * PropertyGroup
-    * ItemGroup
-    * Target
-* Add and Remove Elements
-* Default attributes and text elements exposed as properties, just get and set
-* Automatic indentation
-
 # Usage
 
-## Add an ItemGroup with a Compile element
+There are two types of .csproj format. The pre-2017 format was the format used by older .NET Framework projects and has the following root element:
+
+```xml
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+```
+
+The 2017 format is the format introduced by Visual Studio 2017 for newer .NET Framework projects and .NET Core and has the following root element:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+```
+
+The newer format takes advantage of a lot of default values, and by assuming that all files in the path and sub-paths are part of the project reduces the size of the project file signigicantly.
+
+VsTools.Projects can read and modify both, but will not validate the contents based on the expected format. It is up to you to make sure you are using the correct elements and attributes.
+
+Make sure you understand the schema or element hierarchy.
+
+## Loading an existing Project
+
+To load an existing project, use `Project.Load`. The property `Is2017Project` will be `true` if the root element has the attribute `Sdk`.
 
 ```csharp
+var project = new Project.Load("path\\to\\project.csproj");
 
-// Open a project, create a new ItemGroup and add some files that will be nested under existing files
-// in the project, assuming that the file resides in the same folder as the dependency
-// and add the new ItemGroup after the first ItemGroup
+var isNewVersion = project.Is2017Project;
+```
 
-var proj = Project.Load("path\\to\\project.csproj");
+## Adding a file for compilation to a Project
 
-var firstItemGroup = proj.ItemGroups.First();
+To add a `.cs` file to a `.csproj`, you need to add a `Compile` element to a new or existing `ItemGroup` element.
+
+```csharp
+var project = Project.Load("path\\to\\project.csproj");
 
 var itemGroup = new ItemGroup();
 
 var newFile = new Compile("path\\to\\file.cs");
 
-newFile.DependentUpon = "parent.cs";
-
 itemGroup.AddContent(newfile);
 
-firstItemGroup.AddAfterSelf(itemGroup);
+project.Add(itemGroup);
 
-project.Save("path\\to\\project.csproj");
-
+project.Save();
 ```
 
-This will insert the following xml after the first item group.
+This will insert the following xml as the last child of the `Project` element.
 
 ```xml
   <ItemGroup>
-    <Compile Include="path\to\file.cs">
-      <DependentUpon>parent.cs</DependentUpon>
-    </Compile>
+    <Compile Include="path\to\file.cs"/>
   </ItemGroup>
 ```
 
-## Access PropertyGroup Elements
+## PropertyGroup
 
-PropertyGroup child elements can be accessed through the object's indexer as elements vary between PropertyGroups. You can get or set an element through the accessor. Setting an element that does not exist will create the element. Setting the value on an existing element to null will remove the element.
+The `PropertyGroup` element stores project properties such as `PlatformTarget`, `OutputType`, `AssemblyName`, `TargetFrameworkVersion` to name a few, as well as other custom properties.
+
+### Accessing PropertyGroup Properties
+ 
+PropertyGroup element propeties can be accessed through the `PropertyGroup.Properties` collection. Properties are of type `StringPropertyType` which allow you to set a `Condition`.
 
 ```csharp
+var debug = project.PropertyGroups.First(x => x.Condition == " '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ");
 
-// Open a project, create a new ItemGroup and add some files that will be nested under existing files
-// in the project, assuming that the file resides in the same folder as the dependency
-// and add the new ItemGroup after the first ItemGroup
+Console.WriteLine(debug.Properties["DebugSymbols"].Value);
+```
 
-var proj = Project.Load("path\\to\\project.csproj");
+### Getting and Setting PropertyGroup Properties
 
-var debug = proj.PropertyGroups.First(x => x.Condition == " '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ");
+The `PropertyGroup` class provides convenience methods `GetProperty` and `SetProperty` which avoids having to go through a `StringPropertyType`.
 
-Console.WriteLine(debug["DebugSymbols"]);
-Console.WriteLine(debug["DebugType"]);
-Console.WriteLine(debug["Optimize"]);
-Console.WriteLine(debug["OutputPath"]);
-Console.WriteLine(debug["DefineConstants"]);
-Console.WriteLine(debug["ErrorReport"]);
-Console.WriteLine(debug["WarningLevel"]);
-Console.WriteLine(debug["Prefer32Bit"]);
-Console.WriteLine(debug["PrecompileBeforePublish"]);
-Console.WriteLine(debug["RunCodeAnalysis"]);
-Console.WriteLine(debug["TreatWarningsAsErrors"]);
-Console.WriteLine(debug["PublishDatabases"]);
-Console.WriteLine(debug["CodeAnalysisAdditionalOptions"]);
+`GetProperty` returns the string value or `null` if the property does not exist.
+
+```csharp
+propertyGroup.GetProperty("Configuration");\
+```
+
+`SetProperty` is overloaded with a parameter to set a `Condition` attribute on the property. Setting a property value to `null` will remove the property element.
+
+```csharp
+// Set the property 'Configuration' to 'Debug' with a condition
+propertyGroup.SetProperty("Configuration", "Debug", " '$(Configuration)' == '' ");
+// Set the property 'OutputType' to 'Exe'
+propertyGroup.SetProperty("OutputType", "Exe");
+// Remove property 'SccLocalPath'
+propertyGroup.SetProperty("SccLocalPath", null);
+```
+
+Setting a property can also be done through the `PropertyGroup.Properties` collection.
+
+```csharp
+debug.Properties["DebugSymbols"] = new Property("Configuration", "Debug") { Condition = " '$(Configuration)' == '' " };
+```
+
+## ItemGroup and Item
+
+An `ItemGroup` contains a collection of `Item` objects, which define inputs into the build system.
+
+Common items are `Reference`, `Compile`, `Resource`, and `None`, which tell the build system how to handle the specified item.
+
+Items should inherit from the `Item` class. Items have a required `Include` attribute, and 0 or more Item Metadata that are usually encoded as child elements, for example, a `Reference` can have a `HintPath`
+
+```csharp 
+var references = new ItemGroup();
+
+var reference = new Reference("Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL");
+
+reference.HintPath = "..\\packages\\Newtonsoft.Json.11.0.1\\lib\\net45\\Newtonsoft.Json.dll";
+
+reference.Private = "True";
+
+references.Add(reference);
+
+var files = new ItemGroup();
+
+var file = new Compile("path\\to\\class.cs");
+
+file.DependentUpon = "path\\to\\page.cshtml";
+
+files.Add(file);
+
+project.Add(references);
+project.Add(files);
 
 ```
 
-This will output:
-
-```
-true
-full
-false
-bin\
-DEBUG;TRACE
-prompt
-4
-false
-false
-false
-false
-false
-/assemblyCompareMode:StrongNameIgnoringVersion
-```
-
-## ItemGroup Contents
-
-Since ItemGroup Contents are fairly consistent, there are specialized classes for accessing them. 
-
-Example ItemGroup Contents:
+This will generate the following XML.
 
 ```xml
   <ItemGroup>
-    <Reference Include="Binbin.Linq.PredicateBuilder, Version=1.0.3.26645, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Binbin.Linq.PredicateBuilder.1.0.3.26645\lib\net45\Binbin.Linq.PredicateBuilder.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="path\to\class.cs"/>
       <DependentUpon>page.cshtml</DependentUpon>
     </Compile/>
     <Content Include="path\to\page.cshtml" />
-  <ItemGroup>
+  </ItemGroup>
 ```
 
-ItemGroup contents inherit from ItemGroupContent. Accessing the Contents property will return a list of typed objects depending on the class name.  
+## Item Metadata
 
-```csharp 
-var contents = itemGroup.Contents.ToList();
+For convenience, known Metadata for an element are exposed as string properties on the Item  implementation, e.g. `Reference` has a `HintPath` property as shown above.
 
-// of type Reference
-Console.WriteLine(((Reference)contents[0]).HintPath);
+It is possible to add custom metadata using `AddOrUpdateMetadataValue` on a class inheriting from `Item`, or `SetMetadata` or `AddMetadata` on any class inheriting from `ProjectElement`.
 
-// of type Compile
-Console.WriteLine(((Compile)contents[1]).DependentUpon);
+## Conditions
 
-// of type Content
-Console.WriteLine(((Content)contents[0]).Include);
+In MSBuild, Conditions allow for conditional compilation based on defined project properties and other user defined conditions. Conditions are implemented as a `Condition` attribute on most elememts. Setting a condition on an `ItemGroup` for example will cause items under that item group to be added only if the condition is met.
 
+All classes that inherit from `ProjectElement` have a `Condition` property that sets the underlying element's `Condition` attribute.
+
+The following will cause the itemGroup's items to be included during compilation if the Debug configuration is specified.
+
+```csharp
+itemGroup.Condition = " '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ";
+```
+
+In order to set a `Condition` attribute on an item Metadata, ensure that the Metadata has been created by setting it through the property, then access the Metadata as a `Property` through the items `Metadata` collection property
+
+```csharp
+reference.Metadata["Project"].Condition = " '${CustomProperty}' == 'CustomValue' ";
 ```

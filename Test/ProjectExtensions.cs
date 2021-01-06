@@ -1,7 +1,10 @@
 using System;
+using VsTools.Projects;
+using Project = VsTools.Projects.Project;
 
-namespace VsTools.Projects
+namespace Test
 {
+
     public static class ProjectExtensions
     {
         public static Project CreateDefaultConsole(Guid projectGuid, string rootNameSpace, string assemblyName, string targetFrameworkVersion)
@@ -15,38 +18,38 @@ namespace VsTools.Projects
             project.Add(import);
 
             var propertyGroup = new PropertyGroup();
-            propertyGroup.SetMetadata("Configuration", "Debug", " '$(Configuration)' == '' ");
-            propertyGroup.SetMetadata("Platform", "AnyCPU", " '$(Platform)' == '' ");
-            propertyGroup.SetMetadata("ProjectGuid", $"{{{projectGuid.ToString().ToUpper()}}}");
-            propertyGroup.SetMetadata("OutputType", "Exe");
-            propertyGroup.SetMetadata("RootNamespace", rootNameSpace);
-            propertyGroup.SetMetadata("AssemblyName", assemblyName);
-            propertyGroup.SetMetadata("TargetFrameworkVersion", targetFrameworkVersion);
-            propertyGroup.SetMetadata("FileAlignment", "512");
-            propertyGroup.SetMetadata("AutoGenerateBindingRedirects", "true");
-            propertyGroup.SetMetadata("Deterministic", "true");
+            propertyGroup.SetProperty("Configuration", "Debug", " '$(Configuration)' == '' ");
+            propertyGroup.SetProperty("Platform", "AnyCPU", " '$(Platform)' == '' ");
+            propertyGroup.SetProperty("ProjectGuid", $"{{{projectGuid.ToString().ToUpper()}}}");
+            propertyGroup.SetProperty("OutputType", "Exe");
+            propertyGroup.SetProperty("RootNamespace", rootNameSpace);
+            propertyGroup.SetProperty("AssemblyName", assemblyName);
+            propertyGroup.SetProperty("TargetFrameworkVersion", targetFrameworkVersion);
+            propertyGroup.SetProperty("FileAlignment", "512");
+            propertyGroup.SetProperty("AutoGenerateBindingRedirects", "true");
+            propertyGroup.SetProperty("Deterministic", "true");
             project.Add(propertyGroup);
 
             var debugPropertyGroup = new PropertyGroup { Condition = " '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' " };
-            debugPropertyGroup.SetMetadata("PlatformTarget", "AnyCPU");
-            debugPropertyGroup.SetMetadata("DebugSymbols", "true");
-            debugPropertyGroup.SetMetadata("DebugType", "true");
-            debugPropertyGroup.SetMetadata("DebugSymbols", "full");
-            debugPropertyGroup.SetMetadata("Optimize", "false");
-            debugPropertyGroup.SetMetadata("OutputPath", @"bin\Debug\");
-            debugPropertyGroup.SetMetadata("DefineConstants", "DEBUG;TRACE");
-            debugPropertyGroup.SetMetadata("ErrorReport", "prompt");
-            debugPropertyGroup.SetMetadata("WarningLevel", "4");
+            debugPropertyGroup.SetProperty("PlatformTarget", "AnyCPU");
+            debugPropertyGroup.SetProperty("DebugSymbols", "true");
+            debugPropertyGroup.SetProperty("DebugType", "true");
+            debugPropertyGroup.SetProperty("DebugSymbols", "full");
+            debugPropertyGroup.SetProperty("Optimize", "false");
+            debugPropertyGroup.SetProperty("OutputPath", @"bin\Debug\");
+            debugPropertyGroup.SetProperty("DefineConstants", "DEBUG;TRACE");
+            debugPropertyGroup.SetProperty("ErrorReport", "prompt");
+            debugPropertyGroup.SetProperty("WarningLevel", "4");
             project.Add(debugPropertyGroup);
 
             var releasePropertyGroup = new PropertyGroup { Condition = " '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " };
-            releasePropertyGroup.SetMetadata("PlatformTarget", "AnyCPU");
-            releasePropertyGroup.SetMetadata("DebugType", "pdbonly");
-            releasePropertyGroup.SetMetadata("Optimize", "true");
-            releasePropertyGroup.SetMetadata("OutputPath", @"bin\Release\");
-            releasePropertyGroup.SetMetadata("DefineConstants", "TRACE");
-            releasePropertyGroup.SetMetadata("ErrorReport", "prompt");
-            releasePropertyGroup.SetMetadata("WarningLevel", "4");
+            releasePropertyGroup.SetProperty("PlatformTarget", "AnyCPU");
+            releasePropertyGroup.SetProperty("DebugType", "pdbonly");
+            releasePropertyGroup.SetProperty("Optimize", "true");
+            releasePropertyGroup.SetProperty("OutputPath", @"bin\Release\");
+            releasePropertyGroup.SetProperty("DefineConstants", "TRACE");
+            releasePropertyGroup.SetProperty("ErrorReport", "prompt");
+            releasePropertyGroup.SetProperty("WarningLevel", "4");
             project.Add(releasePropertyGroup);
 
             var referenceItemGroup = new ItemGroup();
@@ -71,8 +74,8 @@ namespace VsTools.Projects
             var project = Project.CreateVS2017Project();
 
             var propertyGroup = new PropertyGroup();
-            propertyGroup.SetMetadata("OutputType", "Exe");
-            propertyGroup.SetMetadata("TargetFramework", targetFramework);
+            propertyGroup.SetProperty("OutputType", "Exe");
+            propertyGroup.SetProperty("TargetFramework", targetFramework);
             project.Add(propertyGroup);
 
             var itemGroup = new ItemGroup();

@@ -2,24 +2,26 @@ using System.Xml.Linq;
 
 namespace VsTools.Projects
 {
-    public class Content : ItemGroupFileContent
+    public class Content : Item
     {
+        public string CopyToOutputDirectory
+        {
+            get => GetMetadataValue();
+            set => AddOrUpdateMetadataValue(value);
+        }
+
+        public string DependentUpon
+        {
+            get => GetMetadataValue();
+            set => AddOrUpdateMetadataValue(value);
+        }
+
         public Content(XNode node) : base(node)
         {
 
         }
 
         public Content(string include) : base(include)
-        {
-
-        }
-
-        public Content(string include, string dependentUpon) : base(include, dependentUpon)
-        {
-
-        }
-
-        public Content(string include, string dependentUpon, string subType) : base(include, dependentUpon, subType)
         {
 
         }

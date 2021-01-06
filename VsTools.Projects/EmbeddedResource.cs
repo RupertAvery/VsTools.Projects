@@ -2,34 +2,50 @@ using System.Xml.Linq;
 
 namespace VsTools.Projects
 {
-    public class EmbeddedResource : ItemGroupContent
+    public class EmbeddedResource : Item
     {
-        private string _logicalName;
-
         public string LogicalName
         {
-            get { return _logicalName; }
-            set
-            {
-                AddOrUpdateElement("LogicalName", value);
-                _logicalName = value;
-            }
+            get => GetMetadataValue();
+            set => AddOrUpdateMetadataValue(value);
         }
+
+        public string DependentUpon
+        {
+            get => GetMetadataValue();
+            set => AddOrUpdateMetadataValue(value);
+        }
+
+        public string CopyToOutputDirectory
+        {
+            get => GetMetadataValue();
+            set => AddOrUpdateMetadataValue(value);
+        }
+
         public EmbeddedResource()
         {
         }
 
         public EmbeddedResource(XNode node) : base(node)
         {
-            var els = GetXElements();
-            _logicalName = els.TryGetXElementValue("HintPath");
         }
 
-        public EmbeddedResource(string include, string logicalName) : base(include)
+        public EmbeddedResource(string include) : base(include)
         {
-            LogicalName = logicalName;
         }
 
+        //public Property GetMetadataElement([CallerMemberName] string name = null)
+        //{
+        //    var element = Element.Elements(name).FirstOrDefault();
+        //    return element != null ? new Property(element) : null;
+        //}
+
+        //public void SetMetadataElement(Property element, [CallerMemberName] string name = null)
+        //{
+        //    var existing = Element.Elements(name).FirstOrDefault();
+        //    existing?.Remove();
+        //    Element.Add(element.Node);
+        //}
 
     }
 }

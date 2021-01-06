@@ -10,7 +10,7 @@ namespace VsTools.Projects
 
         static Reflection()
         {
-            _typelookup = typeof(ItemGroupContent).Assembly.GetTypes().Where(x => typeof(ItemGroupContent).IsAssignableFrom(x)).ToDictionary(x => x.Name);
+            _typelookup = typeof(Item).Assembly.GetTypes().Where(x => typeof(Item).IsAssignableFrom(x)).ToDictionary(x => x.Name);
         }
 
         public static Type GetItemGroupContentTypeFromName(string name)
@@ -18,7 +18,7 @@ namespace VsTools.Projects
             Type type;
             if (!_typelookup.TryGetValue(name, out type))
             {
-                return typeof(ItemGroupContent);
+                return typeof(Item);
             }
             return type;
         }

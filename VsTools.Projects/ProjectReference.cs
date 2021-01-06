@@ -2,42 +2,32 @@ using System.Xml.Linq;
 
 namespace VsTools.Projects
 {
-    public class ProjectReference : ItemGroupContent
+    public class ProjectReference : Item
     {
-        private string _project;
-        private string _name;
+        public string Name
+        {
+            get => GetMetadataValue();
+            set => AddOrUpdateMetadataValue(value);
+        }
 
         public string Project
         {
-            get { return _project; }
-            set
-            {
-                AddOrUpdateElement("Project", value);
-                _project = value;
-            }
+            get => GetMetadataValue();
+            set => AddOrUpdateMetadataValue(value);
         }
 
-        public string Name
+        public string Package
         {
-            get { return _name; }
-            set
-            {
-                AddOrUpdateElement("Name", value);
-                _name = value;
-            }
+            get => GetMetadataValue();
+            set => AddOrUpdateMetadataValue(value);
         }
 
         public ProjectReference(XNode node) : base(node)
         {
-            var els = GetXElements();
-            _project = els.TryGetXElementValue("Value");
-            _name = els.TryGetXElementValue("Name");
         }
 
-        public ProjectReference(string include, string project, string name) : base(include)
+        public ProjectReference(string include) : base(include)
         {
-            Project = project;
-            Name = name;
         }
     }
 }

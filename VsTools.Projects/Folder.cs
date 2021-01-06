@@ -2,7 +2,7 @@ using System.Xml.Linq;
 
 namespace VsTools.Projects
 {
-    public class Folder : ItemGroupContent
+    public class Folder : Item
     {
         public Folder()
         {

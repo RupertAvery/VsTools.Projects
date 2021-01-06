@@ -2,7 +2,7 @@ using System.Xml.Linq;
 
 namespace VsTools.Projects
 {
-    public class Element : CsProjectNode
+    public class Element : ProjectElement
     {
         private string _value;
         private readonly string _elementName;
